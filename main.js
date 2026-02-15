@@ -122,10 +122,10 @@ async function handleSendMessage() {
     sendBtn.disabled = true;
 
     UI.appendMessage('user', text);
-    const loadingDiv = UI.showLoadingMessage();
+    const loadingState = UI.showLoadingMessage();
 
     const messages = [];
-    const baseSystemInstruction = "Responde exclusivamente en el idioma del usuario (Español por defecto). PROHIBIDO usar caracteres de alfabetos no latinos (como chinos, japoneses, etc.) a menos que se solicite explícitamente. Mantén los términos técnicos en su formato estándar (English standard). Tu salida debe ser limpia, académica y perfectamente formateada en Markdown.";
+    const baseSystemInstruction = "Responde exclusivamente en el idioma del usuario (Español por defecto). PROHIBIDO, bajo cualquier concepto, usar caracteres de alfabetos no latinos (como mandarín, chino, japonés, cirílico, etc.). Si detectas tokens extraños, ignóralos y mantén la pureza del español académico. Los términos técnicos deben ser en su formato estándar (English). Tu salida debe ser perfectamente formateada en Markdown.";
 
     if (systemPrompt) {
         messages.push({ role: "system", content: `${baseSystemInstruction} ${systemPrompt}` });
@@ -137,7 +137,12 @@ async function handleSendMessage() {
 
     try {
         const content = await sendMessageToAI(messages);
-        loadingDiv.innerHTML = formatResponse(content); // Usa la función importada localmente
+        loadingState.content.innerHTML = formatResponse(content);
+
+        // Activar el botón de copiado
+        if (loadingState.button) {
+            loadingState.button.classList.remove('opacity-0', 'pointer-events-none');
+        }
 
         // Actualizar historial
         chatHistory = updateChatInHistory(chatHistory, currentChatId, text, content);
