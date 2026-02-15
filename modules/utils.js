@@ -7,8 +7,15 @@ const renderer = new marked.Renderer();
 // Custom code block renderer para mantener el estilo y botón de copia
 renderer.code = function (code, language) {
     const id = 'code-' + Math.random().toString(36).substr(2, 9);
-    // Asegurar que language no sea undefined
     const lang = language || 'TEXTO';
+
+    // Escapar HTML para evitar inyecciones y renderizado vivo
+    const escapedCode = code
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 
     return `
         <div class="code-block my-4 rounded-lg overflow-hidden border border-gray-700 bg-[#0d0d0d]">
@@ -18,7 +25,7 @@ renderer.code = function (code, language) {
                     <i class="fas fa-clone mr-1"></i> COPIAR
                 </span>
             </div>
-            <pre id="${id}" class="p-4 overflow-x-auto text-gray-300 font-mono text-sm leading-relaxed whitespace-pre"><code>${code}</code></pre>
+            <pre id="${id}" class="p-4 overflow-x-auto text-gray-300 font-mono text-sm leading-relaxed whitespace-pre"><code>${escapedCode}</code></pre>
         </div>
     `;
 };
@@ -26,8 +33,10 @@ renderer.code = function (code, language) {
 // Configurar marked con el renderer
 marked.use({
     renderer: renderer,
-    gfm: true, // GitHub Flavored Markdown
-    breaks: false // Evitar saltos de línea forzados por retornos de carro
+    gfm: true,
+    breaks: false,
+    headerIds: false,
+    mangle: false
 });
 
 /**
