@@ -4,6 +4,6 @@
  */
 export const STARTUP_CONFIG = {
     API_KEY: import.meta.env.VITE_API_KEY,
-    MODEL_ID: import.meta.env.VITE_MODEL_ID || "moonshotai/Kimi-K2-Thinking:novita",
+    MODEL_ID: import.meta.env.VITE_MODEL_ID || "meta-llama/Llama-3.3-70B-Instruct",
     API_URL: "https://router.huggingface.co/v1/chat/completions"
 };

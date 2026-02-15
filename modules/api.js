@@ -17,7 +17,8 @@ export async function sendMessageToAI(messages) {
         body: JSON.stringify({
             model: STARTUP_CONFIG.MODEL_ID,
             messages: messages,
-            max_tokens: 2048
+            max_tokens: 4096,
+            temperature: 0.7
         })
     });
 
