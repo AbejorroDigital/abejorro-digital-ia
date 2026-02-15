@@ -38,14 +38,17 @@ marked.use({
 export function formatResponse(text) {
     if (!text) return "";
 
+    // 0. Limpieza de caracteres no latinos (filtrar glifos extraños)
+    // Mantiene letras latinas, números, puntuación común y caracteres Markdown
+    const filteredText = text.replace(/[^\x00-\x7F\xC0-\xFF\u2010-\u2027\u2030-\u205E\u2122\u2115\u2124\u2112\u2111\u2102\u20AC]/g, '').trim();
+
     // 1. Parsear Markdown a HTML
-    const rawHtml = marked.parse(text);
+    const rawHtml = marked.parse(filteredText);
 
     // 2. Sanear HTML para evitar XSS
-    // Permitimos atributos específicos necesarios para el resaltado y estructura
     const cleanHtml = DOMPurify.sanitize(rawHtml, {
-        ADD_ATTR: ['target', 'onclick', 'id', 'class'], // onclick necesario para el botón de copia (aunque idealmente sería event delegation, mantenemos compatibilidad con window.copyCode)
-        ADD_TAGS: ['i', 'button'] // Etiquetas necesarias para los iconos y botones
+        ADD_ATTR: ['target', 'onclick', 'id', 'class'],
+        ADD_TAGS: ['i', 'button']
     });
 
     return cleanHtml;

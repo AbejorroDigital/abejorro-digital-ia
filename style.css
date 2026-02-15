@@ -48,10 +48,10 @@
     unicode-bidi: isolate;
 }
 
-:root {
-    --bumblebee-yellow: #fbbf24;
-    --bumblebee-dark: #121212;
-    --bumblebee-gray: #1e1e1e;
+html,
+body {
+    background-color: var(--bumblebee-dark) !important;
+    color-scheme: dark;
 }
 
 body {
@@ -61,16 +61,23 @@ body {
     overflow-x: hidden;
 }
 
-.glass-ui {
-    background: rgba(30, 30, 30, 0.85);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(251, 191, 36, 0.15);
-}
-
-.chat-container {
+#chatBox {
+    color-scheme: dark;
     flex: 1;
     overflow-y: auto;
     scroll-behavior: smooth;
+}
+
+.content-area,
+.content-area * {
+    font-family: 'Montserrat', sans-serif !important;
+}
+
+.content-area pre,
+.content-area code,
+.content-area pre *,
+.content-area code * {
+    font-family: 'Fira Code', 'Cascadia Code', monospace !important;
 }
 
 .code-block {
