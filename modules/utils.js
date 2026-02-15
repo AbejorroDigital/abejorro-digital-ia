@@ -40,32 +40,7 @@ marked.use({
     mangle: false
 });
 
-/**
- * Pre-procesa el Markdown para cerrar bloques huérfanos y pre-escapar contenido técnico.
- * @param {string} text - El texto crudo de la IA.
- * @returns {string} Texto procesado y seguro.
- */
-function preProcessMarkdown(text) {
-    if (!text) return "";
-
-    // 1. Cierre de Seguridad: Contar triple backticks para evitar fugas de CSS/Layout
-    const backtickCount = (text.match(/```/g) || []).length;
-    let processedText = text;
-    if (backtickCount % 2 !== 0) {
-        processedText += "\n```"; // Cerramos el bloque huérfano
-    }
-
-    // 2. Aislamiento Atómico: Escapar contenido dentro de bloques ``` antes de que marked lo toque
-    // Esto garantiza que el parser reciba texto inerte.
-    return processedText.replace(/```([\s\S]*?)```/g, (match, codeBlock) => {
-        // No escapamos los ticks, solo el contenido interior
-        // El renderer.code recibirá este contenido ya 'seguro'
-        return "```" + codeBlock + "```";
-        // Nota: marked.js llamará a renderer.code con el contenido del bloque.
-        // Si escapamos AQUÍ, renderer.code recibirá entidades. 
-        // Para evitar doble escapado, el renderer.code debe ser simplificado.
-    });
-}
+import { ResponseProcessor } from './responseProcessor.js';
 
 /**
  * Formatea la respuesta del modelo usando Marked y DOMPurify.
@@ -75,8 +50,9 @@ function preProcessMarkdown(text) {
 export function formatResponse(text) {
     if (!text) return "";
 
-    // 0. Pre-procesamiento Atómico y Cierre de Seguridad
-    const safeMarkdown = preProcessMarkdown(text);
+    // 0. ADUANA: Procesamiento atómico de la IA
+    // Normaliza entidades, cierra bloques y previene colisiones CSS
+    const safeMarkdown = ResponseProcessor.process(text);
 
     // 0.1 Limpieza de caracteres no latinos (filtrar glifos extraños)
     const filteredText = safeMarkdown.replace(/[^\x00-\x7F\xC0-\xFF\u2010-\u2027\u2030-\u205E\u2122\u2115\u2124\u2112\u2111\u2102\u20AC]/g, '').trim();
