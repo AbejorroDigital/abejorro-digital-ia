@@ -55,16 +55,19 @@ marked.use({
 export function formatResponse(text) {
     if (!text) return "";
 
-    // 0. Limpieza de caracteres no latinos (filtrar glifos extraños)
-    // Mantiene letras latinas, números, puntuación común y caracteres Markdown
-    const filteredText = text.replace(/[^\x00-\x7F\xC0-\xFF\u2010-\u2027\u2030-\u205E\u2122\u2115\u2124\u2112\u2111\u2102\u20AC]/g, '').trim();
+    // 0. Aislamiento preventivo: Neutralizar posibles filtraciones de control de la IA
+    // Si el texto contiene bloques de código mal cerrados o anidados, intentamos estabilizarlo
+    const stabilizedText = text.replace(/<\/code>/g, '').replace(/<\/pre>/g, '');
+
+    // 0.1 Limpieza de caracteres no latinos (filtrar glifos extraños)
+    const filteredText = stabilizedText.replace(/[^\x00-\x7F\xC0-\xFF\u2010-\u2027\u2030-\u205E\u2122\u2115\u2124\u2112\u2111\u2102\u20AC]/g, '').trim();
 
     // 1. Parsear Markdown a HTML
     const rawHtml = marked.parse(filteredText);
 
     // 2. Sanear HTML para evitar XSS
     const cleanHtml = DOMPurify.sanitize(rawHtml, {
-        ADD_ATTR: ['target', 'onclick', 'id', 'class'],
+        ADD_ATTR: ['target', 'onclick', 'id', 'class', 'style'], // Agregamos 'style' con precaución para layouts
         ADD_TAGS: ['i', 'button']
     });
 

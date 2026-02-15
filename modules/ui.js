@@ -69,6 +69,19 @@ export function appendMessage(role, content) {
         </div>
     `;
 
+    // NEUTRALIZACIÓN POST-INYECCIÓN: Detectar etiquetas peligrosas que hayan escapado al parser fuera de bloques pre
+    const contentArea = wrapper.querySelector('.content-area');
+    if (role === 'ai' && contentArea) {
+        // Buscamos formularios o estilos inyectados directamente en el flujo de la prosa
+        const subForm = contentArea.querySelector('form');
+        const subStyle = contentArea.querySelector('style');
+        if (subForm || subStyle) {
+            console.warn("Abejorro Neutralization: Se detectó intento de inyección de componentes vivos fuera de bloques de código.");
+            // Si detectamos inyección viva, escapamos todo el contenido del mensaje por seguridad
+            contentArea.innerText = contentArea.innerHTML;
+        }
+    }
+
     chatBox.appendChild(wrapper);
 
     // Sincronización de renderizado
