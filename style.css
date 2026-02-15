@@ -78,6 +78,7 @@ body {
 .content-area pre *,
 .content-area code * {
     font-family: 'Fira Code', 'Cascadia Code', monospace !important;
+    white-space: pre !important;
 }
 
 .code-block {
