@@ -124,15 +124,28 @@ async function handleSendMessage() {
     UI.appendMessage('user', text);
     const loadingState = UI.showLoadingMessage();
 
+    // 1. CONSTRUCCIÓN DEL CONTEXTO (Memoria Activa)
     const messages = [];
     const baseSystemInstruction = "Responde exclusivamente en el idioma del usuario (Español por defecto). PROHIBIDO, bajo cualquier concepto, usar caracteres de alfabetos no latinos (como mandarín, chino, japonés, cirílico, etc.). Si detectas tokens extraños, ignóralos y mantén la pureza del español académico. Los términos técnicos deben ser en su formato estándar (English). Tu salida debe ser perfectamente formateada en Markdown.";
 
-    if (systemPrompt) {
-        messages.push({ role: "system", content: `${baseSystemInstruction} ${systemPrompt}` });
-    } else {
-        messages.push({ role: "system", content: baseSystemInstruction });
+    // Añadir System Prompt
+    const fullSystemPrompt = systemPrompt ? `${baseSystemInstruction} ${systemPrompt}` : baseSystemInstruction;
+    messages.push({ role: "system", content: fullSystemPrompt });
+
+    // Cargar historial del chat actual
+    const currentChat = chatHistory.find(c => c.id === currentChatId);
+    if (currentChat && currentChat.messages) {
+        // Tomamos los últimos 14 mensajes (para dejar espacio al mensaje actual y no exceder límites)
+        const recentMessages = currentChat.messages.slice(-7); // 7 pares = 14 mensajes
+        recentMessages.forEach(msg => {
+            messages.push({ role: "user", content: msg.content });
+            if (msg.ai) {
+                messages.push({ role: "assistant", content: msg.ai });
+            }
+        });
     }
 
+    // Añadir el mensaje actual del usuario
     messages.push({ role: "user", content: text });
 
     try {
@@ -144,12 +157,12 @@ async function handleSendMessage() {
             loadingState.button.classList.remove('opacity-0', 'pointer-events-none');
         }
 
-        // Actualizar historial
+        // Actualizar historial persistente
         chatHistory = updateChatInHistory(chatHistory, currentChatId, text, content);
         UI.renderHistory(chatHistory, currentChatId, loadChat, deleteChat);
 
     } catch (error) {
-        loadingDiv.innerHTML = `<div class="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-xs">
+        loadingState.content.innerHTML = `<div class="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-xs">
             <i class="fas fa-exclamation-triangle mr-2"></i> Error: No se pudo contactar con la colmena digital. (${error.message})
         </div>`;
     } finally {
