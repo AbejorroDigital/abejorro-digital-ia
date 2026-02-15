@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Abejorro Digital IA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Fira+Code:wght@300..700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body class="h-screen flex flex-col md:flex-row">
+
+    <!-- Mobile Header -->
+    <div class="md:hidden glass-ui p-4 flex justify-between items-center z-30">
+        <button id="mobileMenuBtn" class="p-2 text-yellow-500">
+            <i class="fas fa-bars text-xl"></i>
+        </button>
+        <div class="flex items-center gap-2">
+            <div class="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center shadow-lg">
+                <i class="fas fa-bee text-black text-lg floating-bee">🐝</i>
+            </div>
+            <span class="font-bold text-yellow-500 text-base">Abejorro IA</span>
+        </div>
+        <button id="mobileNewChatBtn" class="p-2 text-yellow-500">
+            <i class="fas fa-plus"></i>
+        </button>
+    </div>
+
+    <!-- Sidebar (Desktop & Mobile) -->
+    <div id="sidebarOverlay" class="fixed inset-0 hidden"></div>
+    <aside id="sidebar"
+        class="mobile-sidebar md:relative md:left-0 md:flex md:w-72 bg-[#0a0a0a] border-r border-yellow-900/20 flex-col shadow-2xl md:shadow-none">
+        <div class="p-6 hidden md:block">
+            <button id="desktopNewChatBtn"
+                class="w-full border border-yellow-500/30 hover:bg-yellow-500/10 text-yellow-500 py-3 rounded-xl flex items-center justify-center gap-2 transition-all font-bold text-sm tracking-wide">
+                <i class="fas fa-plus text-xs"></i> NUEVA CONVERSACIÓN
+            </button>
+        </div>
+        <div class="p-5 md:hidden border-b border-yellow-900/10 flex justify-between items-center">
+            <span class="text-yellow-500 font-bold uppercase tracking-wider text-sm">Historial de Vuelo</span>
+            <button id="sidebarCloseBtn" class="text-gray-500"><i class="fas fa-times"></i></button>
+        </div>
+        <div id="historyList" class="flex-grow overflow-y-auto px-4 py-4 space-y-1">
+            <!-- Items de historial -->
+        </div>
+        <div
+            class="p-4 border-t border-yellow-900/10 text-[9px] text-gray-600 text-center uppercase tracking-[0.2em] font-bold">
+            Memoria Local Activa
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="flex-grow flex flex-col h-full relative min-w-0">
+        <!-- Desktop Header (Slightly larger) -->
+        <header
+            class="hidden md:flex p-6 glass-ui justify-between items-center px-10 border-b border-yellow-500/10 z-10 shadow-md">
+            <div class="flex items-center gap-5">
+                <div
+                    class="w-14 h-14 bg-yellow-500 rounded-full flex items-center justify-center shadow-[0_0_25px_rgba(251,191,36,0.35)] border-2 border-black/10">
+                    <span class="floating-bee">
+                        <i class="fas fa-bee text-black text-3xl">🐝</i>
+                    </span>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-black text-yellow-500 tracking-tighter uppercase">Abejorro Digital IA</h1>
+                    <div class="flex items-center gap-2 text-[10px] uppercase tracking-widest text-gray-500 font-black">
+                        <i id="statusIcon" class="fas fa-circle status-idle text-[8px]"></i>
+                        <span id="statusText">NÚCLEO EN REPOSO</span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <button id="systemPromptToggleBtn" class="p-3 text-gray-400 hover:text-yellow-500 transition-colors"
+                    title="Instrucciones de Sistema">
+                    <i class="fas fa-sliders-h text-lg"></i>
+                </button>
+                <button id="warmupBtn"
+                    class="text-xs bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-500 px-6 py-2.5 rounded-full border border-yellow-500/30 transition-all font-black tracking-widest uppercase">
+                    <i class="fas fa-bolt mr-2"></i> ACTIVAR NÚCLEO
+                </button>
+            </div>
+        </header>
+
+        <!-- Chat Area -->
+        <main id="chatBox" class="chat-container p-4 md:p-10 space-y-6 md:space-y-10">
+            <!-- Mensajes dinámicos -->
+        </main>
+
+        <!-- Footer / Input Area -->
+        <div class="p-4 md:p-8 bg-gradient-to-t from-[#0b0e14] via-[#0b0e14]/90 to-transparent">
+            <div class="max-w-4xl mx-auto">
+
+                <div id="systemPromptContainer"
+                    class="glass-ui rounded-2xl p-4 border border-yellow-500/10 shadow-2xl mb-4">
+                    <div class="flex justify-between items-center mb-3 px-1">
+                        <label class="text-[10px] uppercase tracking-[0.2em] text-yellow-500 font-black">⚙️ Instrucción
+                            Maestra de Sistema</label>
+                        <button id="systemPromptCloseBtn" class="text-gray-500 hover:text-white transition-colors"><i
+                                class="fas fa-times"></i></button>
+                    </div>
+                    <textarea id="systemInput" rows="2"
+                        class="w-full bg-black/40 border border-white/5 resize-none p-3 text-xs focus:outline-none rounded-xl placeholder-gray-700 text-gray-300 focus:border-yellow-500/30 transition-all"
+                        placeholder="Define aquí la personalidad o restricciones del sistema..."></textarea>
+                </div>
+
+                <div
+                    class="relative glass-ui rounded-[2.5rem] md:rounded-3xl p-2 border border-yellow-500/20 shadow-[0_15px_50px_rgba(0,0,0,0.5)] focus-within:border-yellow-500/50 transition-all">
+                    <div class="flex flex-col md:flex-row items-end">
+                        <textarea id="userInput" rows="1"
+                            class="w-full bg-transparent border-none resize-none px-5 py-4 text-sm focus:outline-none placeholder-gray-600 min-h-[56px] max-h-[200px] leading-relaxed"
+                            placeholder="Escribe tu mensaje... (Enter para enviar)"></textarea>
+                        <div class="flex gap-2 p-2">
+                            <button id="mobileSystemPromptToggleBtn"
+                                class="md:hidden w-11 h-11 rounded-full flex items-center justify-center text-gray-500 bg-white/5">
+                                <i class="fas fa-sliders-h"></i>
+                            </button>
+                            <button id="sendBtn"
+                                class="bg-yellow-500 hover:bg-yellow-400 text-black w-11 h-11 rounded-full flex items-center justify-center transition-all shadow-lg active:scale-90">
+                                <i class="fas fa-paper-plane text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="/main.js"></script>
+</body>
+
+</html>
