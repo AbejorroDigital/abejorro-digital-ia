@@ -10,7 +10,7 @@ body {
     margin: 0;
     padding: 0;
     /* Evita el rebote y scroll global en iOS/Android */
-    height: 100dvh; 
+    height: 80dvh; 
     width: 100vw;
     overflow: hidden; 
     position: fixed; /* Previene desplazamientos fantasma del body */
