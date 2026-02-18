@@ -2,10 +2,6 @@ import { formatResponse } from './utils.js';
 
 /**
  * Renderiza el historial de chats en la barra lateral.
- * @param {Array} history - El historial de chats.
- * @param {number} currentChatId - ID del chat actual.
- * @param {Function} loadChatCallback - Función a ejecutar al hacer click en un chat.
- * @param {Function} deleteChatCallback - Función a ejecutar al eliminar un chat.
  */
 export function renderHistory(history, currentChatId, loadChatCallback, deleteChatCallback) {
     const list = document.getElementById('historyList');
@@ -25,7 +21,6 @@ export function renderHistory(history, currentChatId, loadChatCallback, deleteCh
             </button>
         `;
 
-        // Event listeners
         item.addEventListener('click', () => loadChatCallback(chat.id));
         item.querySelector('.delete-btn').addEventListener('click', (e) => {
             e.stopPropagation();
@@ -38,9 +33,6 @@ export function renderHistory(history, currentChatId, loadChatCallback, deleteCh
 
 /**
  * Añade un mensaje al contenedor del chat.
- * @param {string} role - 'user' o 'ai'.
- * @param {string} content - Contenido HTML o texto del mensaje.
- * @returns {HTMLElement} El elemento donde se insertó el contenido (útil para actualizar después).
  */
 export function appendMessage(role, content) {
     const chatBox = document.getElementById('chatBox');
@@ -51,7 +43,6 @@ export function appendMessage(role, content) {
     if (role === 'ai') {
         formattedContent = formatResponse(content);
     } else {
-        // Simple escape for user content to prevent XSS
         formattedContent = content.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     }
 
@@ -69,24 +60,25 @@ export function appendMessage(role, content) {
         </div>
     `;
 
-    // NEUTRALIZACIÓN POST-INYECCIÓN: Detectar etiquetas peligrosas que hayan escapado al parser fuera de bloques pre
+    // Neutralización de seguridad
     const contentArea = wrapper.querySelector('.content-area');
     if (role === 'ai' && contentArea) {
-        // Buscamos formularios o estilos inyectados directamente en el flujo de la prosa
         const subForm = contentArea.querySelector('form');
         const subStyle = contentArea.querySelector('style');
         if (subForm || subStyle) {
-            console.warn("Abejorro Neutralization: Se detectó intento de inyección de componentes vivos fuera de bloques de código.");
-            // Si detectamos inyección viva, escapamos todo el contenido del mensaje por seguridad
+            console.warn("Abejorro Neutralization: Intento de inyección detectado.");
             contentArea.innerText = contentArea.innerHTML;
         }
     }
 
     chatBox.appendChild(wrapper);
 
-    // Sincronización de renderizado
+    // Auto-scroll mejorado
     requestAnimationFrame(() => {
-        chatBox.scrollTop = chatBox.scrollHeight;
+        chatBox.scrollTo({
+            top: chatBox.scrollHeight,
+            behavior: 'smooth'
+        });
     });
 
     return {
@@ -97,7 +89,6 @@ export function appendMessage(role, content) {
 
 /**
  * Muestra el indicador de carga.
- * @returns {HTMLElement} El elemento donde se insertará la respuesta.
  */
 export function showLoadingMessage() {
     const chatBox = document.getElementById('chatBox');
@@ -110,32 +101,23 @@ export function showLoadingMessage() {
         </div>
         <div class="relative group max-w-[88%] md:max-w-[80%]">
             <div class="bg-gray-800/80 border border-yellow-500/10 rounded-2xl rounded-tl-none p-5 text-sm leading-relaxed shadow-2xl">
-                <div class="content-area w-full clear-both space-y-4" style="display: block !important; width: 100% !important; white-space: normal !important; word-break: break-word !important;">
+                <div class="content-area w-full clear-both space-y-4">
                     <i class="fas fa-spin text-yellow-500 floating-bee">🐝</i> 
                     <span>Zumbando a través de los datos...</span>
                 </div>
             </div>
-            <button onclick="window.copyToClipboard(this)" class="copy-btn-ai absolute -bottom-7 right-2 text-[10px] text-gray-500 hover:text-yellow-500 flex items-center gap-1.5 transition-all font-bold uppercase tracking-wider opacity-0 pointer-events-none">
-                <i class="fas fa-copy"></i> COPIAR RESPUESTA
-            </button>
         </div>
     `;
 
     chatBox.appendChild(wrapper);
-
-    requestAnimationFrame(() => {
-        chatBox.scrollTop = chatBox.scrollHeight;
-    });
+    chatBox.scrollTop = chatBox.scrollHeight;
 
     return {
         content: wrapper.querySelector('.content-area'),
-        button: wrapper.querySelector('.copy-btn-ai')
+        button: null
     };
 }
 
-/**
- * Limpia el chat y muestra el mensaje de bienvenida.
- */
 export function clearChatUI() {
     const chatBox = document.getElementById('chatBox');
     chatBox.innerHTML = `
@@ -150,9 +132,6 @@ export function clearChatUI() {
     `;
 }
 
-/**
- * Alterna la visibilidad de la barra lateral.
- */
 export function toggleSidebar() {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
@@ -160,9 +139,6 @@ export function toggleSidebar() {
     overlay.classList.toggle('hidden');
 }
 
-/**
- * Alterna la visibilidad del prompt de sistema.
- */
 export function toggleSystemPrompt() {
     const container = document.getElementById('systemPromptContainer');
     container.classList.toggle('open');
@@ -171,10 +147,6 @@ export function toggleSystemPrompt() {
     }
 }
 
-/**
- * Actualiza la UI del estado de conexión (warmup).
- * @param {string} status - 'warming', 'ready', 'error'.
- */
 export function updateConnectionStatus(status) {
     const sText = document.getElementById('statusText');
     const sIcon = document.getElementById('statusIcon');
