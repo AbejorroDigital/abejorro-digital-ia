@@ -25,7 +25,7 @@ body {
 
 /* El contenedor principal debe ser un flex-column que ocupe todo el alto */
 main {
-    height: 100dvh;
+    height: 80dvh;
     display: flex;
     flex-direction: column;
     overflow: hidden;
