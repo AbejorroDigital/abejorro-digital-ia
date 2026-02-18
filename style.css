@@ -51,22 +51,36 @@ header {
     gap: 1.25rem;
 }
 
-/* CONTENEDOR DE ENTRADA (UNIFICADO)
-   Se elimina el fondo sólido para que parezca flotar sobre el mismo lienzo del chat.
-*/
+/* CONTENEDOR DE ENTRADA (UNIFICADO Y SEGURO) */
 main + div {
     flex-shrink: 0; 
-    background: transparent; /* Unificación visual con el fondo del chat */
+    background: transparent;
     position: relative;
     z-index: 40;
     width: 100%;
-    /* Padding lateral para que no toque los bordes de la pantalla */
     padding: 0 1rem 1rem 1rem !important;
 }
 
-/* EL "WRAPPER" O CÁPSULA
-   Aquí es donde reside la armonía. Imitamos el estilo de las IAs modernas.
+/* MECÁNICA DE TOGGLE: SYSTEM PROMPT 
+   Restaurado para permitir la expansión y contracción dinámica.
 */
+#systemPromptContainer {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+#systemPromptContainer.open {
+    max-height: 200px;
+    opacity: 1;
+    margin-bottom: 0.75rem;
+    padding: 0.5rem 0;
+}
+
+/* EL "WRAPPER" O CÁPSULA DE ENTRADA */
 main + div form, 
 main + div .input-wrapper {
     display: flex;
@@ -75,16 +89,14 @@ main + div .input-wrapper {
     max-width: 800px;
     margin: 0 auto;
     width: 100%;
-    background: #1a1a1a; /* El color de la cápsula */
+    background: #1a1a1a;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 16px; /* Radio suavizado para legibilidad, menos agresivo */
+    border-radius: 16px; 
     padding: 6px 8px 6px 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-/* ÁREA DE TEXTO (EL PROMPT)
-   Eliminamos bordes propios para que se integre totalmente en la cápsula.
-*/
+/* ÁREA DE TEXTO (EL PROMPT) */
 #userInput, 
 main + div textarea {
     flex: 1;
@@ -100,9 +112,7 @@ main + div textarea {
     line-height: 1.5;
 }
 
-/* BOTÓN DE ENVÍO
-   Proporcionado y estético dentro de la cápsula.
-*/
+/* BOTÓN DE ENVÍO */
 #sendBtn,
 main + div button {
     width: 36px;
@@ -113,7 +123,7 @@ main + div button {
     justify-content: center;
     background-color: #fbbf24;
     color: #000;
-    border-radius: 12px; /* Coherente con el radio de la cápsula */
+    border-radius: 12px; 
     margin-bottom: 2px;
     transition: all 0.2s ease;
 }
@@ -124,26 +134,29 @@ main + div button {
     cursor: not-allowed;
 }
 
-/* RESPETO A LA INTERFAZ DE ANDROID (SAFE AREAS)
-*/
+/* RESPUESTAS Y ESTADOS */
+.status-ready { color: #fbbf24; text-shadow: 0 0 10px rgba(251, 191, 36, 0.5); }
+.status-warming { color: #f59e0b; animation: pulse 2s infinite; }
+.status-idle { color: #6b7280; }
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* ADAPTABILIDAD MÓVIL (RESPECTO A ANDROID) */
 @media (max-width: 768px) {
     main + div {
-        /* Añadimos margen extra para no chocar con los botones de control de Android/iOS */
         padding-bottom: calc(1.5rem + env(safe-area-inset-bottom)) !important;
     }
     
     main + div form, 
     main + div .input-wrapper {
-        border-radius: 20px; /* Un poco más redondo en móvil por estética orgánica */
+        border-radius: 20px;
     }
 }
 
-/* ESTILOS DE CONTENIDO LITERARIO */
-.content-area {
-    display: block;
-    width: 100%;
-}
-
+/* CONTENIDO LITERARIO */
 .content-area p {
     margin-bottom: 1.25rem;
     line-height: 1.6;
@@ -171,28 +184,6 @@ main + div button {
     color: #fbbf24;
 }
 
-pre {
-    padding: 16px;
-    overflow-x: auto;
-    font-family: 'Fira Code', monospace;
-    font-size: 13px;
-    line-height: 1.6;
-}
-
-/* ANIMACIONES Y SCROLLBAR */
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 10px; }
-
-@keyframes floatBee {
-    0%, 100% { transform: translateY(0px) rotate(0deg); }
-    50% { transform: translateY(-4px) rotate(6deg); }
-}
-
-.floating-bee {
-    display: inline-block;
-    animation: floatBee 3s ease-in-out infinite;
-}
-
 /* SIDEBAR */
 .mobile-sidebar {
     position: fixed;
@@ -217,6 +208,5 @@ pre {
     main + div form, 
     main + div .input-wrapper {
         padding: 8px 12px 8px 20px;
-        border-radius: 16px;
     }
 }
