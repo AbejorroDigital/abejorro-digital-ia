@@ -9,7 +9,7 @@ body {
     color-scheme: dark;
     margin: 0;
     padding: 0;
-    /* Mantenemos el control total del viewport */
+    /* Mantenemos el control total del viewport con unidades dinámicas */
     height: 100dvh; 
     width: 100vw;
     overflow: hidden; 
@@ -24,14 +24,14 @@ body {
 }
 
 /* REPARACIÓN DEL CONTENEDOR PRINCIPAL */
-/* Eliminamos la altura fija de 100dvh que causaba el desplazamiento del footer */
 main {
-    flex: 1 1 0%; /* Esta es la clave: ocupa el espacio restante dinámicamente */
-    min-height: 0; /* Permite que el contenedor se ajuste sin desbordar al padre */
+    flex: 1 1 0%; 
+    min-height: 0; 
     display: flex;
     flex-direction: column;
-    overflow-y: auto; /* El scroll ahora pertenece exclusivamente a esta área */
+    overflow-y: auto; 
     position: relative;
+    background-color: #0d0d0d;
 }
 
 /* ENCABEZADO: Altura fija inamovible */
@@ -43,22 +43,76 @@ header {
 /* ÁREA DE CHAT: Sincronizada con el scroll del main */
 #chatBox {
     padding: 1rem;
-    padding-bottom: 2rem;
+    padding-bottom: 1.5rem;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
-/* CONTENEDOR DE ENTRADA (PIE DE PÁGINA) */
-/* Dado que en tu HTML no existe la clase .input-container, 
-   objetivamos el div que sigue inmediatamente al main */
+/* CONTENEDOR DE ENTRADA (PIE DE PÁGINA) 
+   Optimizado para evitar alturas exageradas y asegurar visibilidad */
 main + div {
-    flex-shrink: 0; /* Impedimos que el pie de página se colapse */
+    flex-shrink: 0; 
     background: #0b0e14;
-    border-top: 1px solid rgba(251, 191, 36, 0.1);
+    border-top: 1px solid rgba(251, 191, 36, 0.15);
     position: relative;
     z-index: 40;
-    /* Ajuste vital para la zona segura en dispositivos móviles modernos */
-    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom)) !important;
+    /* Reducimos el padding excesivo para compactar el área */
+    padding: 0.75rem 1rem !important;
+    padding-bottom: calc(0.75rem + env(safe-area-inset-bottom)) !important;
+}
+
+/* Estilización del área de escritura (Input/Textarea) dentro del contenedor */
+main + div form, 
+main + div .input-wrapper {
+    display: flex;
+    align-items: flex-end; /* Alinea el botón con la base del texto */
+    gap: 0.75rem;
+    max-width: 1000px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Ajuste específico para el prompt: proporcional y no exagerado */
+#userInput, 
+main + div textarea {
+    flex: 1;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 24px;
+    padding: 0.75rem 1.25rem;
+    color: #fff;
+    font-size: 16px; /* Evita zoom en iOS */
+    max-height: 120px; /* Evita que crezca demasiado en móviles */
+    min-height: 44px;
+    outline: none;
+    resize: none;
+    transition: border-color 0.2s;
+}
+
+#userInput:focus {
+    border-color: #fbbf24;
+}
+
+/* El botón de envío: Siempre visible y proporcionado */
+#sendBtn,
+main + div button {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0; /* Impide que se deforme */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fbbf24;
+    color: #000;
+    border-radius: 50%;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+#sendBtn:active {
+    transform: scale(0.92);
 }
 
 /* ÁREA DE CONTENIDO LITERARIO */
@@ -156,10 +210,10 @@ pre {
     left: -100%;
     top: 0;
     bottom: 0;
-    width: 80%;
+    width: 85%;
     max-width: 300px;
     z-index: 60;
-    transition: left 0.3s ease;
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .mobile-sidebar.open { left: 0; }
@@ -175,4 +229,11 @@ pre {
     max-height: 200px;
     opacity: 1;
     margin-bottom: 1rem;
+}
+
+/* AJUSTES PARA PANTALLAS GRANDES */
+@media (min-width: 1024px) {
+    main + div {
+        padding: 1.5rem 2rem !important;
+    }
 }
