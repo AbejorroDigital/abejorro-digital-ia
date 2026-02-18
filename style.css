@@ -226,3 +226,48 @@ pre {
 .mobile-sidebar.open {
     left: 0;
 }
+
+/* ... (mantén tus estilos anteriores y actualiza estos bloques) ... */
+
+html,
+body {
+    background-color: #0d0d0d !important; /* var(--bumblebee-dark) */
+    color-scheme: dark;
+    margin: 0;
+    padding: 0;
+    /* Ajuste crítico para móviles */
+    height: 100dvh; 
+    width: 100vw;
+    overflow: hidden; /* Evita el scroll global del cuerpo */
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* El contenedor principal de tu app debe ocupar el 100% disponible */
+main {
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#chatBox {
+    color-scheme: dark;
+    flex: 1; /* Esto obliga al chat a ocupar todo el espacio entre el header y el input */
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    padding-bottom: 2rem; /* Espacio para que el último mensaje no choque con el input */
+}
+
+/* Asegúrate de que el contenedor del input no sea absoluto si quieres que empuje el contenido */
+.input-container {
+    background: linear-gradient(to top, #0d0d0d 80%, transparent);
+    padding: 1rem;
+    flex-shrink: 0; /* Evita que el área de escritura se colapse */
+}
+
+/* ... (resto de tus animaciones y estilos) ... */
