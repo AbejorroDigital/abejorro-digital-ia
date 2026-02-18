@@ -9,11 +9,11 @@ body {
     color-scheme: dark;
     margin: 0;
     padding: 0;
-    /* Evita el rebote y scroll global en iOS/Android */
-    height: 80dvh; 
+    /* CAMBIO CLAVE: Debe ser 100dvh para usar TODA la pantalla */
+    height: 100dvh; 
     width: 100vw;
     overflow: hidden; 
-    position: fixed; /* Previene desplazamientos fantasma del body */
+    position: fixed; /* Evita que el navegador intente hacer scroll elástico */
 }
 
 body {
@@ -23,41 +23,41 @@ body {
     color: #e5e7eb;
 }
 
-/* El contenedor principal debe ser un flex-column que ocupe todo el alto */
+/* El contenedor principal ocupa el 100% real */
 main {
-    height: 80dvh;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
     overflow: hidden;
     position: relative;
 }
 
-/* ENCABEZADO: Altura fija, no se mueve */
+/* ENCABEZADO: Altura fija */
 header {
     flex-shrink: 0;
     z-index: 30;
 }
 
-/* ÁREA DE CHAT: Crece para llenar el espacio y permite scroll interno */
+/* ÁREA DE CHAT: Ocupa el espacio dinámico restante */
 #chatBox {
-    flex: 1 1 auto; /* Ocupa todo el espacio disponible */
+    flex: 1 1 auto;
     overflow-y: auto;
     scroll-behavior: smooth;
     padding: 1rem;
-    padding-bottom: 1rem;
-    -webkit-overflow-scrolling: touch; /* Scroll suave en iOS */
+    padding-bottom: 2rem; /* Espacio extra para que el último mensaje no pegue con el input */
+    -webkit-overflow-scrolling: touch;
 }
 
-/* CONTENEDOR DE ENTRADA: Siempre pegado abajo y visible */
+/* CONTENEDOR DE ENTRADA (PIE DE PÁGINA): Siempre visible al fondo */
 .input-container {
-    flex-shrink: 0; /* No permite que el área de escritura se colapse */
+    flex-shrink: 0; 
     background: #0d0d0d;
     border-top: 1px solid rgba(251, 191, 36, 0.1);
-    padding: 0.75rem 1rem;
-    /* Ajuste para barras de navegación modernas y notch */
-    padding-bottom: calc(0.35rem + env(safe-area-inset-bottom)); 
+    padding: 1rem;
+    /* Ajuste para que el botón y la caja no se peguen al borde inferior del hardware */
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom)); 
     position: relative;
-    z-index: 30;
+    z-index: 40;
 }
 
 /* ÁREA DE CONTENIDO LITERARIO */
@@ -120,7 +120,7 @@ pre {
     color: #d1d5db;
 }
 
-/* ANIMACIONES */
+/* ANIMACIONES Y ESTADOS */
 @keyframes floatBee {
     0%, 100% { transform: translateY(0px) rotate(0deg); }
     50% { transform: translateY(-4px) rotate(6deg); }
@@ -147,7 +147,7 @@ pre {
 #sidebarOverlay {
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(4px);
-    z-index: 40;
+    z-index: 50;
 }
 
 .mobile-sidebar {
@@ -157,7 +157,7 @@ pre {
     bottom: 0;
     width: 80%;
     max-width: 300px;
-    z-index: 50;
+    z-index: 60;
     transition: left 0.3s ease;
 }
 
