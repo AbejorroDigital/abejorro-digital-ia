@@ -60,7 +60,7 @@ export function appendMessage(role, content) {
         </div>
     `;
 
-    // Neutralización de seguridad
+    // Neutralización de seguridad (mantenida según tu lógica base)
     const contentArea = wrapper.querySelector('.content-area');
     if (role === 'ai' && contentArea) {
         const subForm = contentArea.querySelector('form');
@@ -73,13 +73,13 @@ export function appendMessage(role, content) {
 
     chatBox.appendChild(wrapper);
 
-    // Auto-scroll mejorado
-    requestAnimationFrame(() => {
+    // Sincronización de scroll optimizada para la nueva altura
+    setTimeout(() => {
         chatBox.scrollTo({
             top: chatBox.scrollHeight,
             behavior: 'smooth'
         });
-    });
+    }, 50);
 
     return {
         content: wrapper.querySelector('.content-area'),
