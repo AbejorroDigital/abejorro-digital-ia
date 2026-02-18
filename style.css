@@ -9,7 +9,6 @@ body {
     color-scheme: dark;
     margin: 0;
     padding: 0;
-    /* Mantenemos el control total del viewport con unidades dinámicas */
     height: 100dvh; 
     width: 100vw;
     overflow: hidden; 
@@ -34,148 +33,156 @@ main {
     background-color: #0d0d0d;
 }
 
-/* ENCABEZADO: Altura fija inamovible */
+/* ENCABEZADO */
 header {
     flex-shrink: 0;
     z-index: 30;
+    background-color: #0d0d0d;
 }
 
-/* ÁREA DE CHAT: Sincronizada con el scroll del main */
+/* ÁREA DE CHAT */
 #chatBox {
     padding: 1rem;
-    padding-bottom: 1.5rem;
+    padding-bottom: 2rem;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.25rem;
 }
 
-/* CONTENEDOR DE ENTRADA (PIE DE PÁGINA) 
-   Optimizado para evitar alturas exageradas y asegurar visibilidad */
+/* CONTENEDOR DE ENTRADA (UNIFICADO)
+   Se elimina el fondo sólido para que parezca flotar sobre el mismo lienzo del chat.
+*/
 main + div {
     flex-shrink: 0; 
-    background: #0b0e14;
-    border-top: 1px solid rgba(251, 191, 36, 0.15);
+    background: transparent; /* Unificación visual con el fondo del chat */
     position: relative;
     z-index: 40;
-    /* Reducimos el padding excesivo para compactar el área */
-    padding: 0.75rem 1rem !important;
-    padding-bottom: calc(0.75rem + env(safe-area-inset-bottom)) !important;
+    width: 100%;
+    /* Padding lateral para que no toque los bordes de la pantalla */
+    padding: 0 1rem 1rem 1rem !important;
 }
 
-/* Estilización del área de escritura (Input/Textarea) dentro del contenedor */
+/* EL "WRAPPER" O CÁPSULA
+   Aquí es donde reside la armonía. Imitamos el estilo de las IAs modernas.
+*/
 main + div form, 
 main + div .input-wrapper {
     display: flex;
-    align-items: flex-end; /* Alinea el botón con la base del texto */
-    gap: 0.75rem;
-    max-width: 1000px;
+    align-items: flex-end;
+    gap: 0.5rem;
+    max-width: 800px;
     margin: 0 auto;
     width: 100%;
+    background: #1a1a1a; /* El color de la cápsula */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px; /* Radio suavizado para legibilidad, menos agresivo */
+    padding: 6px 8px 6px 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-/* Ajuste específico para el prompt: proporcional y no exagerado */
+/* ÁREA DE TEXTO (EL PROMPT)
+   Eliminamos bordes propios para que se integre totalmente en la cápsula.
+*/
 #userInput, 
 main + div textarea {
     flex: 1;
-    background: #1a1a1a;
-    border: 1px solid #333;
-    border-radius: 24px;
-    padding: 0.75rem 1.25rem;
+    background: transparent;
+    border: none;
+    padding: 10px 0;
     color: #fff;
-    font-size: 16px; /* Evita zoom en iOS */
-    max-height: 120px; /* Evita que crezca demasiado en móviles */
-    min-height: 44px;
+    font-size: 16px;
+    max-height: 150px;
+    min-height: 24px;
     outline: none;
     resize: none;
-    transition: border-color 0.2s;
+    line-height: 1.5;
 }
 
-#userInput:focus {
-    border-color: #fbbf24;
-}
-
-/* El botón de envío: Siempre visible y proporcionado */
+/* BOTÓN DE ENVÍO
+   Proporcionado y estético dentro de la cápsula.
+*/
 #sendBtn,
 main + div button {
-    width: 44px;
-    height: 44px;
-    flex-shrink: 0; /* Impide que se deforme */
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: #fbbf24;
     color: #000;
-    border-radius: 50%;
-    transition: transform 0.2s, background-color 0.2s;
+    border-radius: 12px; /* Coherente con el radio de la cápsula */
+    margin-bottom: 2px;
+    transition: all 0.2s ease;
 }
 
-#sendBtn:active {
-    transform: scale(0.92);
+#sendBtn:disabled {
+    background-color: #333;
+    color: #666;
+    cursor: not-allowed;
 }
 
-/* ÁREA DE CONTENIDO LITERARIO */
+/* RESPETO A LA INTERFAZ DE ANDROID (SAFE AREAS)
+*/
+@media (max-width: 768px) {
+    main + div {
+        /* Añadimos margen extra para no chocar con los botones de control de Android/iOS */
+        padding-bottom: calc(1.5rem + env(safe-area-inset-bottom)) !important;
+    }
+    
+    main + div form, 
+    main + div .input-wrapper {
+        border-radius: 20px; /* Un poco más redondo en móvil por estética orgánica */
+    }
+}
+
+/* ESTILOS DE CONTENIDO LITERARIO */
 .content-area {
     display: block;
     width: 100%;
 }
 
-.content-area p, .content-area h1, .content-area h2, 
-.content-area ul, .content-area ol, .content-area li, 
-.content-area blockquote, .content-area pre {
-    display: block;
-    width: 100%;
-    margin-bottom: 0.8rem;
-    white-space: normal;
-    word-break: break-word;
-}
-
 .content-area p {
     margin-bottom: 1.25rem;
     line-height: 1.6;
-}
-
-/* EXCEPCIONES INLINE */
-.content-area em, .content-area strong, .content-area code, 
-.content-area span {
-    display: inline;
-    width: auto;
+    font-size: 0.95rem;
 }
 
 /* BLOQUES DE CÓDIGO */
 .code-block {
-    background-color: #0d0d0d;
+    background-color: #111;
     border: 1px solid #333;
-    border-radius: 8px;
-    margin: 12px 0;
-    position: relative;
-    max-width: 100%;
+    border-radius: 12px;
+    margin: 16px 0;
+    overflow: hidden;
 }
 
 .code-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 12px;
-    background: #1a1a1a;
+    padding: 8px 16px;
+    background: #1e1e1e;
     border-bottom: 1px solid #333;
-    border-radius: 8px 8px 0 0;
     font-family: monospace;
-    font-size: 10px;
+    font-size: 11px;
     color: #fbbf24;
 }
 
 pre {
-    padding: 12px;
+    padding: 16px;
     overflow-x: auto;
     font-family: 'Fira Code', monospace;
-    font-size: 12px;
-    line-height: 1.5;
-    color: #d1d5db;
+    font-size: 13px;
+    line-height: 1.6;
 }
 
-/* ANIMACIONES */
+/* ANIMACIONES Y SCROLLBAR */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 10px; }
+
 @keyframes floatBee {
     0%, 100% { transform: translateY(0px) rotate(0deg); }
     50% { transform: translateY(-4px) rotate(6deg); }
@@ -186,54 +193,30 @@ pre {
     animation: floatBee 3s ease-in-out infinite;
 }
 
-.status-ready { color: #fbbf24; text-shadow: 0 0 10px rgba(251, 191, 36, 0.5); }
-.status-warming { color: #f59e0b; animation: pulse 2s infinite; }
-.status-idle { color: #6b7280; }
-
-@keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
-}
-
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
-
-/* SIDEBAR Y OVERLAY */
-#sidebarOverlay {
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(4px);
-    z-index: 50;
-}
-
+/* SIDEBAR */
 .mobile-sidebar {
     position: fixed;
     left: -100%;
     top: 0;
     bottom: 0;
     width: 85%;
-    max-width: 300px;
+    max-width: 280px;
     z-index: 60;
+    background: #0d0d0d;
     transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .mobile-sidebar.open { left: 0; }
 
-#systemPromptContainer {
-    transition: all 0.3s ease;
-    max-height: 0;
-    overflow: hidden;
-    opacity: 0;
-}
-
-#systemPromptContainer.open {
-    max-height: 200px;
-    opacity: 1;
-    margin-bottom: 1rem;
-}
-
-/* AJUSTES PARA PANTALLAS GRANDES */
+/* AJUSTES PARA PC */
 @media (min-width: 1024px) {
     main + div {
-        padding: 1.5rem 2rem !important;
+        padding: 0 2rem 2rem 2rem !important;
+    }
+    
+    main + div form, 
+    main + div .input-wrapper {
+        padding: 8px 12px 8px 20px;
+        border-radius: 16px;
     }
 }
