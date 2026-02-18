@@ -44,7 +44,7 @@ header {
     overflow-y: auto;
     scroll-behavior: smooth;
     padding: 1rem;
-    padding-bottom: 2rem;
+    padding-bottom: 1rem;
     -webkit-overflow-scrolling: touch; /* Scroll suave en iOS */
 }
 
@@ -55,7 +55,7 @@ header {
     border-top: 1px solid rgba(251, 191, 36, 0.1);
     padding: 0.75rem 1rem;
     /* Ajuste para barras de navegación modernas y notch */
-    padding-bottom: calc(0.75rem + env(safe-area-inset-bottom)); 
+    padding-bottom: calc(0.35rem + env(safe-area-inset-bottom)); 
     position: relative;
     z-index: 30;
 }
@@ -171,7 +171,7 @@ pre {
 }
 
 #systemPromptContainer.open {
-    max-height: 300px;
+    max-height: 200px;
     opacity: 1;
     margin-bottom: 1rem;
 }
