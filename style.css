@@ -9,11 +9,11 @@ body {
     color-scheme: dark;
     margin: 0;
     padding: 0;
-    /* CAMBIO CLAVE: Debe ser 100dvh para usar TODA la pantalla */
+    /* Mantenemos el control total del viewport */
     height: 100dvh; 
     width: 100vw;
     overflow: hidden; 
-    position: fixed; /* Evita que el navegador intente hacer scroll elástico */
+    position: fixed; 
 }
 
 body {
@@ -23,41 +23,42 @@ body {
     color: #e5e7eb;
 }
 
-/* El contenedor principal ocupa el 100% real */
+/* REPARACIÓN DEL CONTENEDOR PRINCIPAL */
+/* Eliminamos la altura fija de 100dvh que causaba el desplazamiento del footer */
 main {
-    height: 100dvh;
+    flex: 1 1 0%; /* Esta es la clave: ocupa el espacio restante dinámicamente */
+    min-height: 0; /* Permite que el contenedor se ajuste sin desbordar al padre */
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow-y: auto; /* El scroll ahora pertenece exclusivamente a esta área */
     position: relative;
 }
 
-/* ENCABEZADO: Altura fija */
+/* ENCABEZADO: Altura fija inamovible */
 header {
     flex-shrink: 0;
     z-index: 30;
 }
 
-/* ÁREA DE CHAT: Ocupa el espacio dinámico restante */
+/* ÁREA DE CHAT: Sincronizada con el scroll del main */
 #chatBox {
-    flex: 1 1 auto;
-    overflow-y: auto;
-    scroll-behavior: smooth;
     padding: 1rem;
-    padding-bottom: 2rem; /* Espacio extra para que el último mensaje no pegue con el input */
+    padding-bottom: 2rem;
+    scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
 }
 
-/* CONTENEDOR DE ENTRADA (PIE DE PÁGINA): Siempre visible al fondo */
-.input-container {
-    flex-shrink: 0; 
-    background: #0d0d0d;
+/* CONTENEDOR DE ENTRADA (PIE DE PÁGINA) */
+/* Dado que en tu HTML no existe la clase .input-container, 
+   objetivamos el div que sigue inmediatamente al main */
+main + div {
+    flex-shrink: 0; /* Impedimos que el pie de página se colapse */
+    background: #0b0e14;
     border-top: 1px solid rgba(251, 191, 36, 0.1);
-    padding: 1rem;
-    /* Ajuste para que el botón y la caja no se peguen al borde inferior del hardware */
-    padding-bottom: calc(1rem + env(safe-area-inset-bottom)); 
     position: relative;
     z-index: 40;
+    /* Ajuste vital para la zona segura en dispositivos móviles modernos */
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom)) !important;
 }
 
 /* ÁREA DE CONTENIDO LITERARIO */
@@ -120,7 +121,7 @@ pre {
     color: #d1d5db;
 }
 
-/* ANIMACIONES Y ESTADOS */
+/* ANIMACIONES */
 @keyframes floatBee {
     0%, 100% { transform: translateY(0px) rotate(0deg); }
     50% { transform: translateY(-4px) rotate(6deg); }
