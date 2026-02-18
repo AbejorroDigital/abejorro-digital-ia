@@ -2,85 +2,93 @@
 @tailwind components;
 @tailwind utilities;
 
+/* CONFIGURACIÓN CRÍTICA DEL VIEWPORT */
+html,
+body {
+    background-color: #0d0d0d !important;
+    color-scheme: dark;
+    margin: 0;
+    padding: 0;
+    /* Evita el rebote y scroll global en iOS/Android */
+    height: 100dvh; 
+    width: 100vw;
+    overflow: hidden; 
+    position: fixed; /* Previene desplazamientos fantasma del body */
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    font-family: 'Montserrat', sans-serif;
+    color: #e5e7eb;
+}
+
+/* El contenedor principal debe ser un flex-column que ocupe todo el alto */
+main {
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+}
+
+/* ENCABEZADO: Altura fija, no se mueve */
+header {
+    flex-shrink: 0;
+    z-index: 30;
+}
+
+/* ÁREA DE CHAT: Crece para llenar el espacio y permite scroll interno */
+#chatBox {
+    flex: 1 1 auto; /* Ocupa todo el espacio disponible */
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    padding: 1rem;
+    padding-bottom: 2rem;
+    -webkit-overflow-scrolling: touch; /* Scroll suave en iOS */
+}
+
+/* CONTENEDOR DE ENTRADA: Siempre pegado abajo y visible */
+.input-container {
+    flex-shrink: 0; /* No permite que el área de escritura se colapse */
+    background: #0d0d0d;
+    border-top: 1px solid rgba(251, 191, 36, 0.1);
+    padding: 0.75rem 1rem;
+    /* Ajuste para barras de navegación modernas y notch */
+    padding-bottom: calc(0.75rem + env(safe-area-inset-bottom)); 
+    position: relative;
+    z-index: 30;
+}
+
+/* ÁREA DE CONTENIDO LITERARIO */
 .content-area {
     display: block;
     width: 100%;
 }
 
-.content-area p,
-.content-area h1,
-.content-area h2,
-.content-area h3,
-.content-area h4,
-.content-area h5,
-.content-area h6,
-.content-area ul,
-.content-area ol,
-.content-area li,
-.content-area blockquote,
-.content-area pre,
-.content-area hr,
-.content-area table {
+.content-area p, .content-area h1, .content-area h2, 
+.content-area ul, .content-area ol, .content-area li, 
+.content-area blockquote, .content-area pre {
     display: block;
     width: 100%;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.8rem;
     white-space: normal;
     word-break: break-word;
 }
 
-/* Excepción para elementos inline dentro de bloques */
-.content-area em,
-.content-area strong,
-.content-area code,
-.content-area a,
-.content-area span,
-.content-area sub,
-.content-area sup,
-.content-area img {
-    display: inline;
-    width: auto;
-    margin-bottom: 0;
-}
-
 .content-area p {
     margin-bottom: 1.25rem;
-    display: block;
-    unicode-bidi: isolate;
+    line-height: 1.6;
 }
 
-html,
-body {
-    background-color: var(--bumblebee-dark) !important;
-    color-scheme: dark;
+/* EXCEPCIONES INLINE */
+.content-area em, .content-area strong, .content-area code, 
+.content-area span {
+    display: inline;
+    width: auto;
 }
 
-body {
-    background-color: var(--bumblebee-dark);
-    color: #e5e7eb;
-    font-family: 'Montserrat', sans-serif;
-    overflow-x: hidden;
-}
-
-#chatBox {
-    color-scheme: dark;
-    flex: 1;
-    overflow-y: auto;
-    scroll-behavior: smooth;
-}
-
-.content-area,
-.content-area * {
-    font-family: 'Montserrat', sans-serif !important;
-}
-
-.content-area pre,
-.content-area code,
-.content-area pre *,
-.content-area code * {
-    font-family: 'Fira Code', 'Cascadia Code', monospace !important;
-    white-space: pre !important;
-}
-
+/* BLOQUES DE CÓDIGO */
 .code-block {
     background-color: #0d0d0d;
     border: 1px solid #333;
@@ -100,49 +108,22 @@ body {
     border-radius: 8px 8px 0 0;
     font-family: monospace;
     font-size: 10px;
-    color: var(--bumblebee-yellow);
+    color: #fbbf24;
 }
 
 pre {
     padding: 12px;
     overflow-x: auto;
-    font-family: 'Fira Code', 'Cascadia Code', monospace;
+    font-family: 'Fira Code', monospace;
     font-size: 12px;
     line-height: 1.5;
     color: #d1d5db;
 }
 
-.copy-btn {
-    cursor: pointer;
-    padding: 4px 8px;
-    border-radius: 4px;
-    transition: all 0.2s;
-}
-
-.copy-btn:hover {
-    background: rgba(251, 191, 36, 0.2);
-}
-
+/* ANIMACIONES */
 @keyframes floatBee {
-    0% {
-        transform: translateY(0px) rotate(0deg);
-    }
-
-    25% {
-        transform: translateY(-4px) rotate(6deg);
-    }
-
-    50% {
-        transform: translateY(0px) rotate(0deg);
-    }
-
-    75% {
-        transform: translateY(4px) rotate(-6deg);
-    }
-
-    100% {
-        transform: translateY(0px) rotate(0deg);
-    }
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-4px) rotate(6deg); }
 }
 
 .floating-bee {
@@ -150,66 +131,23 @@ pre {
     animation: floatBee 3s ease-in-out infinite;
 }
 
-.status-ready {
-    color: var(--bumblebee-yellow);
-    text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
-}
-
-.status-warming {
-    color: #f59e0b;
-    animation: pulse 2s infinite;
-}
-
-.status-idle {
-    color: #6b7280;
-}
+.status-ready { color: #fbbf24; text-shadow: 0 0 10px rgba(251, 191, 36, 0.5); }
+.status-warming { color: #f59e0b; animation: pulse 2s infinite; }
+.status-idle { color: #6b7280; }
 
 @keyframes pulse {
-
-    0%,
-    100% {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: 0.5;
-    }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
 }
 
-::-webkit-scrollbar {
-    width: 4px;
-}
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
 
-::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #333;
-    border-radius: 10px;
-}
-
-#systemPromptContainer {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    max-height: 0;
-    overflow: hidden;
-    opacity: 0;
-    transform: translateY(-10px);
-}
-
-#systemPromptContainer.open {
-    max-height: 300px;
-    opacity: 1;
-    transform: translateY(0);
-    margin-bottom: 1rem;
-}
-
-/* Mobile Sidebar Overlay */
+/* SIDEBAR Y OVERLAY */
 #sidebarOverlay {
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(4px);
     z-index: 40;
-    transition: opacity 0.3s ease;
 }
 
 .mobile-sidebar {
@@ -223,51 +161,17 @@ pre {
     transition: left 0.3s ease;
 }
 
-.mobile-sidebar.open {
-    left: 0;
-}
+.mobile-sidebar.open { left: 0; }
 
-/* ... (mantén tus estilos anteriores y actualiza estos bloques) ... */
-
-html,
-body {
-    background-color: #0d0d0d !important; /* var(--bumblebee-dark) */
-    color-scheme: dark;
-    margin: 0;
-    padding: 0;
-    /* Ajuste crítico para móviles */
-    height: 100dvh; 
-    width: 100vw;
-    overflow: hidden; /* Evita el scroll global del cuerpo */
-}
-
-body {
-    display: flex;
-    flex-direction: column;
-    font-family: 'Montserrat', sans-serif;
-}
-
-/* El contenedor principal de tu app debe ocupar el 100% disponible */
-main {
-    height: 100dvh;
-    display: flex;
-    flex-direction: column;
+#systemPromptContainer {
+    transition: all 0.3s ease;
+    max-height: 0;
     overflow: hidden;
+    opacity: 0;
 }
 
-#chatBox {
-    color-scheme: dark;
-    flex: 1; /* Esto obliga al chat a ocupar todo el espacio entre el header y el input */
-    overflow-y: auto;
-    scroll-behavior: smooth;
-    padding-bottom: 2rem; /* Espacio para que el último mensaje no choque con el input */
+#systemPromptContainer.open {
+    max-height: 300px;
+    opacity: 1;
+    margin-bottom: 1rem;
 }
-
-/* Asegúrate de que el contenedor del input no sea absoluto si quieres que empuje el contenido */
-.input-container {
-    background: linear-gradient(to top, #0d0d0d 80%, transparent);
-    padding: 1rem;
-    flex-shrink: 0; /* Evita que el área de escritura se colapse */
-}
-
-/* ... (resto de tus animaciones y estilos) ... */
